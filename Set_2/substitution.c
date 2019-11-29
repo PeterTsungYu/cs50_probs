@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <cs50.h>
-#include <string.h>
 
-//cases diff. between upper and lower
-const int cases = 32;
-const int keylen = 26;
-const int totlen = (1 + keylen) * keylen / 2;
+const int cases = 32; //cases diff. between upper and lower
+const int keylen = 26; //length of the alphabets
 
 string substitute(string s, string k);
 int length(string s);
@@ -57,17 +54,18 @@ int length(string s)
 
 bool alphabet(string s)
 {
-    int alphabool = 1;
-    //check all the letters are the alphabets
-    //check no duplicate letters
+    int alphabool = 1;    
     for (int i = 0; alphabool == 1 && s[i] != '\0'; i++)
     {
+        //check all the letters are the alphabets
         if ((s[i] < 65) || ((s[i] > 90) && (s[i] < 97)) || (s[i] > 122))
         {
             alphabool = 0;
         }
+        //check no duplicate letters by for looping one by one
         for (int v = i + 1; alphabool == 1 && s[v] != '\0'; v++)
         {
+            // 0 mod <some int> = 0
             int mod = (s[i] - s[v]) % cases;
             if (mod == 0)
             {
