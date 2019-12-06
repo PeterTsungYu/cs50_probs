@@ -68,6 +68,7 @@ int main(int argc, string argv[])
 // Update vote totals given a new vote
 bool vote(string name)
 {
+    int counter = 0;
     // Iterate over the names in the array of candidates
     for (int i = 0; i < candidate_count; i++)
     {
@@ -76,13 +77,16 @@ bool vote(string name)
         if (strcmp(name, candidates[i].name) == 0)
         {
             candidates[i].votes++;
-            return true;
+            counter = 1;
         }
         // If it is mismatched,
-        // do nothing to the vote number and return false
-        else
-            return false;
+        // do nothing to the vote number
     }
+
+    if (counter == 1)
+        return true;
+    else
+        return false;
 }
 
 // Print the winner (or winners) of the election
@@ -92,14 +96,14 @@ void print_winner(void)
     candidate sorted[MAX];
 
     // a new array for a copy from the state array of candidates
-    candidate ballots[MAX]
+    candidate ballots[MAX];
 
     // a tie counter
     int tie = 0;
 
     // Insertion sort the array of candidates into the just-named sorted array
     // Or, one could copy the whole array to a new array
-    for (int i = 0; i < Max; i++)
+    for (int i = 0; i < MAX; i++)
     {
         ballots[i] = candidates[i];
     }
