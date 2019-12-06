@@ -68,7 +68,7 @@ int main(int argc, string argv[])
 // Update vote totals given a new vote
 bool vote(string name)
 {
-    int counter = 0;
+    bool counted = false;
     // Iterate over the names in the array of candidates
     for (int i = 0; i < candidate_count; i++)
     {
@@ -77,16 +77,13 @@ bool vote(string name)
         if (strcmp(name, candidates[i].name) == 0)
         {
             candidates[i].votes++;
-            counter = 1;
+            counted = true;
+            break;
         }
         // If it is mismatched,
         // do nothing to the vote number
     }
-
-    if (counter == 1)
-        return true;
-    else
-        return false;
+    return counted;
 }
 
 // Print the winner (or winners) of the election
@@ -95,11 +92,11 @@ void print_winner(void)
     // Create a new array to store the sorted struct
     candidate sorted[MAX];
 
-    // a new array for a copy from the state array of candidates
+    // A new array for a copy from the state array of candidates
     candidate ballots[MAX];
 
-    // a tie counter
-    int tie = 0;
+    // A temporary struct container
+    candidate temp;
 
     // Insertion sort the array of candidates into the just-named sorted array
     // Or, one could copy the whole array to a new array
@@ -113,19 +110,21 @@ void print_winner(void)
     // from the beginning till the end
     for (int q = 0; q < MAX; q++)
     {
+        if (strcmp(ballots[q].name, "") == 0)
+            break;
         // Second iteration goes through the array of the array of the sorted,
         // from the beginning till the same position as the first iteration
-        for(int v = 0, temp; v < (q+1); v++)
+        for (int v = 0; v < (q + 1); v++)
         {
-            // When the one in the copy is greater than the one in the sorted,
-            // swap them with a temporary container, temp
+            // When the one in the copy is greater than the one in the sorted or both are equal to zeros,
+            // swap them with a temporary struct container, temp
             // That is placing the greater into the sorted array and the smaller into the copy array
             // In the visualizing way, this is a simple way to make a space to insert the target and shift the others backward
-            if (ballots[q].votes >= sorted[v].votes)
+            if ((ballots[q].votes > sorted[v].votes) || (ballots[q].votes == 0 && sorted[v].votes == 0))
             {
-                temp = sorted[v].votes;
-                sorted[v].votes = ballots[q].votes;
-                ballots[q].votes = temp;
+                temp = sorted[v];
+                sorted[v] = ballots[q];
+                ballots[q] = temp;
             }
         }
     }
@@ -134,10 +133,9 @@ void print_winner(void)
     for (int i = 0; i < MAX; i++)
     {
         if (sorted[i].votes == sorted[0].votes)
-        {
-            printf("%s ", sorted[i].name);
-        }
+            printf("%s\n", sorted[i].name);
+        if (sorted[i + 1].votes != sorted[0].votes)
+            break;
     }
-    printf("\n");
     return;
 }
