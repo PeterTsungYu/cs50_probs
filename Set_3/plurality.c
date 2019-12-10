@@ -96,6 +96,7 @@ void print_winner(void)
     candidate ballots[MAX];
 
     // A temporary struct container
+    // In order not to access the wrong memory address, better to clarify the values.
     candidate temp;
     temp.name = 0;
     temp.votes = 0;
@@ -105,7 +106,7 @@ void print_winner(void)
     for (int i = 0; i < MAX; i++)
     {
         ballots[i] = candidates[i];
-        sorted[i] = temp;
+        sorted[i] = temp; //Though the values of the array are defaulted to be 0, it is better to clarify the values to 0 specifically.
     }
 
     // The sorted is in the descendent order. (from the greater to the smaller)
@@ -113,6 +114,7 @@ void print_winner(void)
     // from the beginning till the end
     for (int q = 0; q < MAX; q++)
     {
+        // When there is no candidates in the array of candidates, break the loop.
         if (ballots[q].name == 0)
             break;
         // Second iteration goes through the array of the array of the sorted,
@@ -135,9 +137,14 @@ void print_winner(void)
     // Count and print the ties with the greatest votes
     for (int i = 0; i < MAX; i++)
     {
+        // When there is no candidates in the array of sorted, break the loop.
+        if (sorted[i].name == 0)
+            break;
+        // When the current index's value is equal to the greatest, which is the first value, print it.
         if (sorted[i].votes == sorted[0].votes)
             printf("%s\n", sorted[i].name);
-        if (sorted[i + 1].votes != sorted[0].votes)
+        // Otherwise, break.
+        else
             break;
     }
     return;
