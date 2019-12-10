@@ -97,12 +97,15 @@ void print_winner(void)
 
     // A temporary struct container
     candidate temp;
+    temp.name = 0;
+    temp.votes = 0;
 
     // Insertion sort the array of candidates into the just-named sorted array
     // Or, one could copy the whole array to a new array
     for (int i = 0; i < MAX; i++)
     {
         ballots[i] = candidates[i];
+        sorted[i] = temp;
     }
 
     // The sorted is in the descendent order. (from the greater to the smaller)
@@ -110,11 +113,11 @@ void print_winner(void)
     // from the beginning till the end
     for (int q = 0; q < MAX; q++)
     {
-        if (strcmp(ballots[q].name, "") == 0)
+        if (ballots[q].name == 0)
             break;
         // Second iteration goes through the array of the array of the sorted,
         // from the beginning till the same position as the first iteration
-        for (int v = 0; v < (q + 1); v++)
+        for (int v = 0; v <= q; v++)
         {
             // When the one in the copy is greater than the one in the sorted or both are equal to zeros,
             // swap them with a temporary struct container, temp
