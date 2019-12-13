@@ -1,5 +1,6 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <string.h>
 
 // Max number of candidates
 #define MAX 9
@@ -32,7 +33,7 @@ int candidate_count;
 bool vote(int rank, string name, int ranks[]);
 void record_preferences(int ranks[]);
 void add_pairs(void);
-void sort_pairs(void);
+void sort_pairs(int len);
 void lock_pairs(void);
 void print_winner(void);
 
@@ -224,8 +225,8 @@ void sort_pairs(int len)
             // The right one will be copied to the array of temp, which is meant to be a sorted array.
             // Since the invalid vote is an option, the func: lock_pairs should use the difference to measure the edge
             // Ex. edge == preferences[winner][loser] - preferences[pairs[loser][winner].
-            if ((preferences[pairs[left].winner][pairs[left].loser] - preferences[pairs[left].loser][pairs[left].winner]) =<
-            (preferences[pairs[right].winner][pairs[right].loser] - preferences[pairs[right].loser][pairs[right].winner]))
+            if ((preferences[pairs[left].winner][pairs[left].loser] - preferences[pairs[left].loser][pairs[left].winner])
+            <= (preferences[pairs[right].winner][pairs[right].loser] - preferences[pairs[right].loser][pairs[right].winner]))
             {
                 temp[i] = pairs[right];
                 right++;
@@ -268,12 +269,12 @@ void lock_pairs(void)
         // (All - Exception), the only exception will be (A > B > C > A).
         // If the value is already fault, then remains it.
         // Otherwise, go into the followings conditions.
-        if (locked[pairs[i].winer][pairs[i].loser] != false)
+        if (locked[pairs[i].winner][pairs[i].loser] != false)
             for (int v = (i + 1); v < pair_count; v++)
-                if (pairs[i].loser == pairs[v].winer)
+                if (pairs[i].loser == pairs[v].winner)
                     for (int u = (v + 1); u < pair_count; u++)
                         // If (A > B > C > A), then set the true to the false.
-                        if (pairs[v].loser == pairs[u].winner) && (pairs[u.loser] == pairs[i].winner)
+                        if ((pairs[v].loser == pairs[u].winner) && (pairs[u].loser == pairs[i].winner))
                             locked[pairs[u].winner][pairs[u].loser] = false;
     }
 
@@ -283,6 +284,41 @@ void lock_pairs(void)
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    // Define a array of counter for counting the source
+    // (ex. source == A > B. and it is the true in the array of locked)
+    int counter[candidate_count];
+
+    // Define a temp value for a memory container for searching the highest counter
+    int temp = 0;
+    // Define a temp value for a memory container for searching the index of candidates with the highest counter
+    int winner = 0;
+
+    // Iterate through the 2-D array of locked looking for the true value.
+    for (int i = 0; i < candidate_count; i ++)
+    {
+        for (int u = 0; u < candidate_count; u++)
+            if (locked[i][u] == true)
+                counter[i]++;
+    }
+
+    // Iterate through the array of counter, and search for the highest counter.
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (counter[i] > temp)
+        {
+            temp = counter[i];
+            winner = i;
+        }
+    }
+
+    // If there are tie winners, print them all.
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (counter[i] == temp)
+            {
+                printf("%s", candidates[i]);
+            }
+    }
+    printf("\n");
     return;
 }
