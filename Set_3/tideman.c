@@ -314,8 +314,16 @@ void print_winner(void)
         // Set the counter array values to 0
         counter[i] = 0;
         for (int u = 0; u < candidate_count; u++)
+        {
+            // Except itself
+            if (i == u)
+                continue;
+            // source = #true - #false
             if (locked[i][u] == true)
                 counter[i]++;
+            else
+                counter[i]--;
+        }
     }
 
     // Iterate through the array of counter, and search for the highest counter.
