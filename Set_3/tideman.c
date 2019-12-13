@@ -6,12 +6,17 @@
 #define MAX 9
 
 // Invalid vote counted as a denoted integer
-#define INVALID 10
+#define INVALID (MAX+1)
 
+int pair_count;
+int candidate_count;
+
+// global int default value is 0
 // preferences[i][j] is number of voters who prefer i over j
 int preferences[MAX][MAX];
 
 // locked[i][j] means i is locked in over j
+// global boolean default value is false
 bool locked[MAX][MAX];
 
 // Each pair has a winner, loser
@@ -26,14 +31,11 @@ pair;
 string candidates[MAX];
 pair pairs[MAX * (MAX - 1) / 2];
 
-int pair_count;
-int candidate_count;
-
 // Function prototypes
 bool vote(int rank, string name, int ranks[]);
 void record_preferences(int ranks[]);
 void add_pairs(void);
-void sort_pairs(int len);
+void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
 
@@ -94,7 +96,7 @@ int main(int argc, string argv[])
     }
 
     add_pairs();
-    sort_pairs(pair_count);
+    sort_pairs();
     lock_pairs();
     print_winner();
     return 0;
@@ -146,7 +148,7 @@ void record_preferences(int ranks[])
         for (int v = (i + 1); v < candidate_count; v++)
         // Iterate through each ranks from the next index (to except i itself) of the current index of ranks to the last one in the ranks as a candidate v.
         {
-            // if the ranks[i] is INVALID, then no need to record into the array of preferences. Thus, break.
+            // if the ranks[i] is INVALID, then no need to record into the array of preferences. Thus, continue to the next i.
             if (ranks[i] == INVALID)
                 break;
             preferences[ranks[i]][ranks[v]]++;
@@ -158,6 +160,9 @@ void record_preferences(int ranks[])
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
+    // temps array for debugging
+    pair temps[candidate_count * (candidate_count - 1) / 2];
+
     // Iterate through the 2-D array of preferences.
     // Except itself and except the swap sequence (ex. (0,1) == (1,0)).
     for (int i = 0; i < candidate_count; i++)
@@ -166,29 +171,35 @@ void add_pairs(void)
         {
             if (preferences[i][v] > preferences[v][i])
             {
-                pairs[(i * (candidate_count - i + 1) + v)].winner = i;
-                pairs[(i * (candidate_count - i + 1) + v)].loser = v;
+                temps[pair_count].winner = i;
+                temps[pair_count].loser = v;
             }
             // Due to there is no way for the preferences[v][i] would be iterated through during this double iteration,
             // thus it should be an explicit condition here.
             else if (preferences[i][v] < preferences[v][i])
             {
-                pairs[(i * (candidate_count - i + 1) + v)].winner = v;
-                pairs[(i * (candidate_count - i + 1) + v)].loser = i;
+                temps[pair_count].winner = v;
+                temps[pair_count].loser = i;
             }
             // If it is a tie, no need to count into the global array of pairs.
-            // And, no need to count as an increment of global integer of pair_count.
+            // And, no need to count as an increment of global integer of pair_count. Thus, continue to the next v.
             else
-                break;
+                continue;
             pair_count++;
         }
+    }
+
+    // Update the array of pairs
+    for (int u = 0; u < pair_count; u++)
+    {
+        pairs[u] = temps[u];
     }
     return;
 }
 
 // Sort pairs in decreasing order by strength of victory
 // In order to do the recursion, the fun_arg cannot be void.
-void sort_pairs(int len)
+void mergeSort(int len)
 {
     // Merge sort through the array of pairs
     // Base case: Stop when len of the portion array is equal to 1.
@@ -198,18 +209,18 @@ void sort_pairs(int len)
     // Recursive case: Each step is gonna make a portion half.
     // Each half (right and left) is sorted in the last step.
     // Thus, the "Sort left" and "Sort right" are hiden in the recursion "Merge"
-    sort_pairs(len/2);
+    mergeSort(len / 2);
 
     // Plus one additional element: Merge section.
     // Iteration is gonna divided the whole array into smaller portions in each recursive step.
     // v is defined as a step indicator.
     // len is a multiplication factor.
-    for (int v = 0; v < (pair_count/len); v++)
+    for (int v = 0; v < (pair_count / len); v++)
     // Ex. if the len = 2, and the whole array size is 8. Then 8/2 = 4 is going to be the number of the iteraton.
     {
         // Define the left margin and the right margin first
-        int left = len*v;
-        int right = len*(v + 1/2);
+        int left = len * v;
+        int right = len * (v + 1 / 2);
 
         // Define a array of temp in the size one len
         // To put the sorted array into the array of temp.
@@ -226,7 +237,7 @@ void sort_pairs(int len)
             // Since the invalid vote is an option, the func: lock_pairs should use the difference to measure the edge
             // Ex. edge == preferences[winner][loser] - preferences[pairs[loser][winner].
             if ((preferences[pairs[left].winner][pairs[left].loser] - preferences[pairs[left].loser][pairs[left].winner])
-            <= (preferences[pairs[right].winner][pairs[right].loser] - preferences[pairs[right].loser][pairs[right].winner]))
+                <= (preferences[pairs[right].winner][pairs[right].loser] - preferences[pairs[right].loser][pairs[right].winner]))
             {
                 temp[i] = pairs[right];
                 right++;
@@ -243,10 +254,15 @@ void sort_pairs(int len)
         // Array of temp overrides the original array of pairs
         for (int u = 0; u < len; u++)
         {
-            pairs[(v*len) + u] = temp[u];
+            pairs[(v * len) + u] = temp[u];
         }
     }
     return;
+}
+
+void sort_pairs(void)
+{
+    mergeSort(pair_count);
 }
 
 // Lock pairs (a 2-D boolean array. “adjacency matrix”) into the candidate graph in order, without creating cycles
@@ -254,9 +270,8 @@ void lock_pairs(void)
 {
     for (int i = 0; i < pair_count; i++)
     {
-        // For every items, setting the default true/false
+        // For every items, setting the pairs source default as true when mapping pairs to locked.
         locked[pairs[i].winner][pairs[i].loser] = true;
-        locked[pairs[i].loser][pairs[i].winner] = false;
     }
 
     // A circle is composed of three people => Three iteration loops.
@@ -296,6 +311,8 @@ void print_winner(void)
     // Iterate through the 2-D array of locked looking for the true value.
     for (int i = 0; i < candidate_count; i ++)
     {
+        // Set the counter array values to 0
+        counter[i] = 0;
         for (int u = 0; u < candidate_count; u++)
             if (locked[i][u] == true)
                 counter[i]++;
@@ -315,9 +332,9 @@ void print_winner(void)
     for (int i = 0; i < candidate_count; i++)
     {
         if (counter[i] == temp)
-            {
-                printf("%s", candidates[i]);
-            }
+        {
+            printf("%s", candidates[i]);
+        }
     }
     printf("\n");
     return;
