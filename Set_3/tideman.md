@@ -60,17 +60,18 @@ Rank 1: Bob
 Rank 2: Charlie
 Rank 3: Alice
 
-Rank 1: Bob
-Rank 2: Charlie
+Rank 1: Charlie
+Rank 2: Bob
 Rank 3: Alice
 
 Charlie:Alice   = 4:0 (Edge = 4 - 0 = 4)
-Charlie:Bob     = 2:2 (tie)
-Alice:Bob       = 2:2 (tie)
-pair_count = 1
+Charlie:Bob     = 3:1 (Edge = 3 - 1 = 2)
+Alice:Bob       = 1:3 (Edge = 3 - 1 = 2)
+pair_count = 3
 
 Charlie -> Alice    (true)
-locked = 1
+Charlie -> Bob    (true)
+locked = 2
 
 Source: Charlie
 

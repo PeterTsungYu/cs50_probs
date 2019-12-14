@@ -209,6 +209,10 @@ void mergeSort(int len)
     // Recursive case: Each step is gonna make a portion half.
     // Each half (right and left) is sorted in the last step.
     // Thus, the "Sort left" and "Sort right" are hiden in the recursion "Merge"
+
+    // But, if len = 3, then 3/2 return 1...
+    //TODO, if len is odd...
+    //TODO, if len is even...
     mergeSort(len / 2);
 
     // Plus one additional element: Merge section.
