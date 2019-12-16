@@ -1,6 +1,7 @@
 #include <cs50.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 // Max number of candidates
 #define MAX 9
@@ -199,75 +200,69 @@ void add_pairs(void)
 
 // Sort pairs in decreasing order by strength of victory
 // In order to do the recursion, the fun_arg cannot be void.
-void mergeSort(int len)
+void mergeSort(int len, pair array[])
 {
     // Merge sort through the array of pairs
     // Base case: Stop when len of the portion array is equal to 1.
     if (len <= 1)
         return;
 
-    // Recursive case: Each step is gonna make a portion half.
-    // Each half (right and left) is sorted in the last step.
-    // Thus, the "Sort left" and "Sort right" are hiden in the recursion "Merge"
+    // Recursive case
+    // "Sort left" and then "Sort right"
 
-    mergeSort(len / 2);
+    pair lefts[len / 2];
+    pair rights[len - (len / 2)];
 
-    // Plus one additional element: Merge section.
-    // Iteration is gonna divided the whole array into smaller portions in each recursive step.
-    // v is defined as a step indicator.
-    // len is a multiplication factor.
-    for (int v = 0; v < (pair_count / len); v++)
-    // Ex. if the len = 2, and the whole array size is 8. Then 8/2 = 4 is going to be the number of the iteraton.
+    // Sort left and right
+    for (int i = 0; i < (len / 2); i++)
     {
-        // Define the left margin and the right margin first
-        int left = len * v;
+        lefts[i] = pairs[i];
+        rights[i] = pairs[i + (len / 2)];
+    }
 
-        // if formulated as right = len*(v+1/2).
-        // When v = 0, then v+1/2 = 0. It will lead right = 0 as well.
-        // Which is incorrect.
-        int right = len * v + len / 2;
+    mergeSort((len / 2), lefts);
+    mergeSort((len - len / 2), rights);
 
-        // Define a array of temp in the size one len
-        // To put the sorted array into the array of temp.
-        pair temp[len];
+    pair temps[len];
 
-        // Merge by comparing each time the greatest number of both halves
-        // The position/index of the sorted temp is defined by i.
-        for (int i = 0; i < len; i++)
-        // The iteration is going throgh from each position to a len away of the position.
-        // Ex. the position is now at 2(len)*1(v) = 2. It will end at 2*(1+1) = 4, which is a len away the initial position for each iteration.
+    // Merge by comparing each time the greatest number of both halves
+    // The position/index of the sorted temp is defined by i.
+    for (int i = 0; i < len; i++)
+    // The iteration is going throgh from each position to a len away of the position.
+    // Ex. the position is now at 2(len)*1(v) = 2. It will end at 2*(1+1) = 4, which is a len away the initial position for each iteration.
+    {
+        int left = 0;
+        int right = len / 2;
+        // If the greatest in right half is greater or equal than the greatest in the left half,
+        // The right one will be copied to the array of temp, which is meant to be a sorted array.
+        // Since the invalid vote is an option, the func: lock_pairs should use the difference to measure the edge
+        // Ex. edge == preferences[winner][loser] - preferences[pairs[loser][winner].
+        if ((preferences[pairs[left].winner][pairs[left].loser] - preferences[pairs[left].loser][pairs[left].winner])
+            <= (preferences[pairs[right].winner][pairs[right].loser] - preferences[pairs[right].loser][pairs[right].winner]))
         {
-            // If the greatest in right half is greater or equal than the greatest in the left half,
-            // The right one will be copied to the array of temp, which is meant to be a sorted array.
-            // Since the invalid vote is an option, the func: lock_pairs should use the difference to measure the edge
-            // Ex. edge == preferences[winner][loser] - preferences[pairs[loser][winner].
-            if ((preferences[pairs[left].winner][pairs[left].loser] - preferences[pairs[left].loser][pairs[left].winner])
-                <= (preferences[pairs[right].winner][pairs[right].loser] - preferences[pairs[right].loser][pairs[right].winner]))
-            {
-                temp[i] = pairs[right];
-                right++;
-            }
-            // If the greatest in left half is greater than the greatest in the right half,
-            // The left one will be copied to the array of temp, which is meant to be a sorted array.
-            else
-            {
-                temp[i] = pairs[left];
-                left++;
-            }
+            temps[i] = pairs[right];
+            right++;
         }
-
-        // Array of temp overrides the original array of pairs
-        for (int u = 0; u < len; u++)
+        // If the greatest in left half is greater than the greatest in the right half,
+        // The left one will be copied to the array of temp, which is meant to be a sorted array.
+        else
         {
-            pairs[(v * len) + u] = temp[u];
+            temps[i] = pairs[left];
+            left++;
         }
+    }
+
+    // Array of temp overrides the original array of pairs
+    for (int u = 0; u < len; u++)
+    {
+        pairs[u] = temps[u];
     }
     return;
 }
 
 void sort_pairs(void)
 {
-    mergeSort(pair_count);
+    mergeSort(pair_count, pairs);
 }
 
 // Lock pairs (a 2-D boolean array. “adjacency matrix”) into the candidate graph in order, without creating cycles
