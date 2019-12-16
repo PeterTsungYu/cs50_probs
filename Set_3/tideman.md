@@ -97,7 +97,7 @@ Rank 3: Charlie
 Charlie:Alice   = 2:2 (tie)
 Charlie:Bob     = 1:3 (Edge = 2)
 Alice:Bob       = 3:1 (Edge = 2)
-pair_count = 1
+pair_count = 2
 
 Bob -> Charlie    (true)
 Alice -> Bob      (true)

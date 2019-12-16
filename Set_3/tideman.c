@@ -210,9 +210,6 @@ void mergeSort(int len)
     // Each half (right and left) is sorted in the last step.
     // Thus, the "Sort left" and "Sort right" are hiden in the recursion "Merge"
 
-    // But, if len = 3, then 3/2 return 1...
-    //TODO, if len is odd...
-    //TODO, if len is even...
     mergeSort(len / 2);
 
     // Plus one additional element: Merge section.
@@ -224,7 +221,11 @@ void mergeSort(int len)
     {
         // Define the left margin and the right margin first
         int left = len * v;
-        int right = len * (v + 1 / 2);
+
+        // if formulated as right = len*(v+1/2).
+        // When v = 0, then v+1/2 = 0. It will lead right = 0 as well.
+        // Which is incorrect.
+        int right = len * v + len / 2;
 
         // Define a array of temp in the size one len
         // To put the sorted array into the array of temp.
@@ -344,9 +345,7 @@ void print_winner(void)
     for (int i = 0; i < candidate_count; i++)
     {
         if (counter[i] == temp)
-        {
             printf("%s", candidates[i]);
-        }
     }
     printf("\n");
     return;
