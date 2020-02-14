@@ -22,6 +22,7 @@ words = len(text.split())
     "Mrs." should be considered one sentence"""
 sentences = 0
 for u in [".", "!", "?"]:
+    # the '-1' here at the end is to deduct the last non-used obj in the list
     sentences += len(text.split(u)) - 1
 # print(f"{sentences} sentence(s)")
 
