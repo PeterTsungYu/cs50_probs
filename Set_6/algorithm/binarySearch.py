@@ -1,9 +1,12 @@
+# Binary search a sorted list
+
 def main():
     # Ask for user input to create a list, which is in the ascendent order
     b = int(input("Begin a random list with: "))
     e = int(input("End a random list with: "))
     c = int(input("Increment in a random list with: "))
     lst = List(b, e, c)
+    print(lst)
     
     # Ask for an int to be searched
     n = int(input("Search int: "))

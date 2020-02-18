@@ -1,16 +1,25 @@
 from sys import argv, exit
 import re
 
+def main():
+    if (len(argv) != 3):
+    # Command line arg, argv, index [0] start after the "python"
+        print("Usage: python dna.py data.csv sequence.txt")
+        exit(1)
+    else: 
+        # re.search the file with the extension name as *.csv as the second argv
+        if not re.search('.*[.]csv$',argv[1]):
+            print("Usage: Please include *.csv file as the second arument")
+            exit(2)
+        # re.search the file with the extension name as *.txt as the third argv
+        if not re.search('.*[.]txt$',argv[2]):
+            print("Usage: Please include *.txt file as the third arument")
+            exit(2)
+    
+    # build custom functions...
+    # matchDNA()
 
-if (len(argv) != 3):
-# Command line arg, argv, index [0] start after the "python"
-    print("Usage: python dna.py data.csv sequence.txt")
-# re.search the file with the extension name as *.csv as the second argv
-if not re.search('.*[.]csv$',argv[1]):
-    print("Usage: Please include *.csv file as the second arument")
-# re.search the file with the extension name as *.txt as the third argv
-if not re.search('.*[.]txt$',argv[2]):
-    print("Usage: Please include *.txt file as the third arument")
+main()
 
 
 # Read and be as a memory in Python, require 3 objects: 
@@ -91,5 +100,5 @@ for i in range(1, len_database, 1):
     if  rep == dnaId[1]:
         print(dnaId[0])
         exit(0)
+
 print("No match")
-exit(1)

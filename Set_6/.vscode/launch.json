@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["databases/large.csv", "sequences/5.txt"],
+            "args": ["databases/large.csv", "sequences/12.txt"],
             "console": "integratedTerminal"
         }
     ]

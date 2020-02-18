@@ -1,11 +1,32 @@
 import random
+import re
 
+# Sort an num list, optional for int and float nums
 def main():
-    # Ask for user input to create a list, which is in the ascendent order
-    b = int(input("Begin a random list with: "))
-    e = int(input("End a random list with: "))
-    c = int(input("Increment in a random list with: "))
-    randlst = randList(b, e, c)
+    # Ask user to type in a random list or automatically build a list by the program
+    ans = input("Auto? (y/n) ")
+
+    # Automatically build a list by the program
+    if ans == 'y':
+        # Ask for user input to create a list, which is in the ascendent order
+        b = int(input("Begin a random list with: "))
+        e = int(input("End a random list with: "))
+        c = int(input("Increment in a random list with: "))
+        randlst = randList(b, e, c)
+        
+    # User types in a random list
+    # Like this...
+    # 3, 5.3, -6,6,60, 1, -3,8,9.2,3,4,5,9, 10,2,6,73, -4.9
+    else:
+        # re.findall method to find all (more than one: +) the digit numbers ([0-9])
+        # optioinal for positive and negative numbers ([-+]?) 
+        # return a list of strings containing all the numbers
+        usrlst = input("Input: (Sepearate your number with comma ',') ")
+        randlst = re.findall(r"[-+]?\d+\.\d+|[-+]?\d+", usrlst)
+        # iterate the list to convert elements from string into int
+        for i in range(len(randlst)):
+            randlst[i] = float(randlst[i])
+
     print(randlst)
 
     # bubble sort the random list
