@@ -29,7 +29,7 @@ def main():
 
 def profile(csvFile):
     # Read and be as a memory in Python 
-    csv_path = "/Users/peteryo/Dev/CS50_probs/set_6/dnaDir/dna/{}".format(csvFile)
+    csv_path = "<working dir>/CS50_probs/set_6/dnaDir/dna/{}".format(csvFile)
     csv_con = open(csv_path, 'r')
     lst = csv_con.readline().replace('\n', '').split(',')
     lstSTR = []
@@ -59,7 +59,7 @@ def strSeq(txtFile):
     # Read and be as a memory in Python, require 3 objects: 
     # File on Disk <--- Connection ---> Memory in Python program 
     # First, save the path on the disk to a path var: txt_path
-    txt_path = "/Users/peteryo/Dev/CS50_probs/set_6/dnaDir/dna/{}".format(txtFile)
+    txt_path = "<working dir>/CS50_probs/set_6/dnaDir/dna/{}".format(txtFile)
     # Second, built a connection by open func with reading 'r' mode 
     # and store the connection to a var: txt_con
     txt_con = open(txt_path, 'r')
