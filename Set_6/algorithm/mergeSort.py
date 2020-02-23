@@ -75,14 +75,14 @@ def mergeSort(lst):
 
     # Iteration over the sort list to put elements into
     for v in range(len_lst):
-        # if the left elements all has  been looked through
+        # if the left elements all has been looked through
         # then the rest of the right elements could be all put into the rest position of sort list
         # and break the loop
         if i == half:
             sort[v:] = right[u:]
             break
 
-        # if the right elements all has  been looked through
+        # if the right elements all has been looked through
         # then the rest of the left elements could be all put into the rest position of sort list
         # and break the loop
         if u == (len_lst - half):
@@ -102,7 +102,6 @@ def mergeSort(lst):
         else:
             sort[v] = left[i]
             i += 1
-            continue
 
     # return the sort list    
     return sort
